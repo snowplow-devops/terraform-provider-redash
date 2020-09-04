@@ -1,13 +1,20 @@
 package redash
 
 import (
+	"context"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform/terraform"
 	"github.com/snowplow-devops/redash-client-go/redash"
 )
 
+type Config struct {
+	RedashURL string
+	APIKey    string
+}
+
 // Provider
-func Provider() terraform.ResourceProvider {
+func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"api_key": {
@@ -25,27 +32,31 @@ func Provider() terraform.ResourceProvider {
 			},
 		},
 
-		ResourcesMap: map[string]*schema.Resource{
-			//"redash_data_source": resourceRedashDataSource(),
-		},
+		// ResourcesMap: map[string]*schema.Resource{
+		// 	//"redash_data_source": resourceRedashDataSource(),
+		// },
 		DataSourcesMap: map[string]*schema.Resource{
 			"redash_data_source": dataSourceRedashDataSource(),
 		},
 
-		ConfigureFunc: providerConfigure,
+		ConfigureContextFunc: providerConfigure,
 	}
 }
 
-func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	api_key := d.Get("api_key").(string)
 	hostname := d.Get("hostname").(string)
 
-	if (api_key != "") && (hostname != "") {
-		c, err := redash.NewClient(&hostname, &api_key)
-		if err != nil {
-			return nil, err
-		}
-	}
+	var diags diag.Diagnostics
 
-	return c, nil
+	if (api_key == "") || (hostname == "") {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Unable to create Redash client",
+			Detail:   "Missing REDASH_API_KEY or REDASH_URL environment variables.",
+		})
+	}
+	c := redash.NewClient(&redash.Config{RedashURL: hostname, APIKey: api_key})
+
+	return c, diags
 }

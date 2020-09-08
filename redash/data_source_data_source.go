@@ -1,8 +1,11 @@
 package redash
 
 import (
+	"context"
 	"fmt"
+	"strconv"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/snowplow-devops/redash-client-go/redash"
 )
@@ -51,63 +54,68 @@ func dataSourceRedashDataSource() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			/*"options": {
-				Type:     schema.TypeMap,
-				Computed: true,
-				Elem: &schema.Schema{
-					Schema: map[string]*schema.Schema{
-						"warehouse": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"account": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"user": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"database": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"port": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"host": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"dbname": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
-			},*/
 		},
-		Read: dataSourceRedashDataSourceRead,
+		ReadContext: dataSourceRedashDataSourceRead,
 	}
 }
 
-func dataSourceRedashDataSourceRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceRedashDataSourceRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*redash.Client)
+
+	var diags diag.Diagnostics
 
 	id := d.Get("id").(int)
 
 	data_source, err := c.GetDataSource(id)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.Set("name", data_source.Name)
+	d.Set("scheduled_queue_name", data_source.ScheduledQueueName)
+	d.Set("pause_reason", data_source.PauseReason)
+	d.Set("queue_name", data_source.QueueName)
+	d.Set("syntax", data_source.Syntax)
+	d.Set("paused", strconv.Itoa(data_source.Paused))
+	d.Set("view_only", strconv.FormatBool(data_source.ViewOnly))
+	d.Set("type", data_source.Type)
+	options := flattenOptionsData(data_source)
+	if err := d.Set("options", options); err != nil {
+		return diag.FromErr(err)
+	}
 
-	//d.Set("options", "{\"test\": \"a thing\"}")
+	d.SetId(fmt.Sprint(data_source.Id))
 
-	fmt.Println(*data_source.Options)
-	d.SetId(fmt.Sprint(data_source.ID))
+	return diags
+}
 
-	return nil
+func flattenOptionsData(data_source *redash.DataSource) map[string]interface{} {
+
+	if data_source != nil {
+		switch {
+		case data_source.Type == "redshift":
+			return map[string]interface{}{
+				"port":   strconv.Itoa(data_source.Options.Port),
+				"host":   data_source.Options.Host,
+				"user":   data_source.Options.User,
+				"dbname": data_source.Options.Dbname,
+			}
+		case data_source.Type == "bigquery":
+			return map[string]interface{}{
+				"project_id":       data_source.Options.ProjectID,
+				"use_standard_sql": strconv.FormatBool(data_source.Options.UseStandardSQL),
+				"load_schema":      strconv.FormatBool(data_source.Options.LoadSchema),
+			}
+		case data_source.Type == "snowflake":
+			return map[string]interface{}{
+				"warehouse": data_source.Options.Warehouse,
+				"account":   data_source.Options.Account,
+				"user":      data_source.Options.User,
+				"database":  data_source.Options.Database,
+			}
+		}
+
+	}
+
+	return map[string]interface{}{}
 }

@@ -97,7 +97,7 @@ func flattenOptionsData(data_source *redash.DataSource) map[string]interface{} {
 			}
 		case data_source.Type == "bigquery":
 			return map[string]interface{}{
-				"project_id":       data_source.Options.ProjectID,
+				"project_id":       data_source.Options.ProjectId,
 				"use_standard_sql": strconv.FormatBool(data_source.Options.UseStandardSQL),
 				"load_schema":      strconv.FormatBool(data_source.Options.LoadSchema),
 			}

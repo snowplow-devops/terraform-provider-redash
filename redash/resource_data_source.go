@@ -29,13 +29,11 @@ func resourceRedashDataSource() *schema.Resource {
 			},
 			"scheduled_queue_name": {
 				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
+				Computed: true,
 			},
 			"queue_name": {
 				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
+				Computed: true,
 			},
 			"paused": {
 				Type:     schema.TypeInt,
@@ -50,11 +48,18 @@ func resourceRedashDataSource() *schema.Resource {
 			"type": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"syntax": {
 				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"groups": {
+				Type:     schema.TypeList,
 				Optional: true,
-				Default:  "sql",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"options": {
 				Type:     schema.TypeList,
@@ -72,10 +77,15 @@ func resourceRedashDataSource() *schema.Resource {
 						},
 						"password": {
 							Type:      schema.TypeString,
-							Sensitive: true,
 							Optional:  true,
+							Sensitive: true,
 							DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-								return true
+								if old == "--------" {
+									return true
+								}
+
+								return false
+
 							},
 						},
 						"user": {
@@ -245,15 +255,17 @@ func flattenOptions(data_source *redash.DataSource) map[string]interface{} {
 		switch {
 		case data_source.Type == "redshift":
 			return map[string]interface{}{
-				"port":   data_source.Options.Port,
-				"host":   data_source.Options.Host,
-				"user":   data_source.Options.User,
-				"dbname": data_source.Options.Dbname,
+				"port":     data_source.Options.Port,
+				"host":     data_source.Options.Host,
+				"user":     data_source.Options.User,
+				"password": data_source.Options.Password,
+				"dbname":   data_source.Options.Dbname,
 			}
 		case data_source.Type == "bigquery":
 			return map[string]interface{}{
-				"project_id":       data_source.Options.ProjectID,
+				"project_id":       data_source.Options.ProjectId,
 				"use_standard_sql": strconv.FormatBool(data_source.Options.UseStandardSQL),
+				"json_key_file":    data_source.Options.JSONKeyFile,
 				"load_schema":      strconv.FormatBool(data_source.Options.LoadSchema),
 			}
 		case data_source.Type == "snowflake":

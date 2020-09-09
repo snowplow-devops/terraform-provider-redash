@@ -31,10 +31,9 @@ func Provider() *schema.Provider {
 				Description: "Redash API Key",
 			},
 		},
-
-		// ResourcesMap: map[string]*schema.Resource{
-		// 	//"redash_data_source": resourceRedashDataSource(),
-		// },
+		ResourcesMap: map[string]*schema.Resource{
+			"redash_data_source": resourceRedashDataSource(),
+		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"redash_data_source": dataSourceRedashDataSource(),
 		},

@@ -30,7 +30,7 @@ func dataSourceRedashDataSource() *schema.Resource {
 				Optional: true,
 			},
 			"paused": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Optional: true,
 			},
 			"pause_reason": {
@@ -38,10 +38,6 @@ func dataSourceRedashDataSource() *schema.Resource {
 				Optional: true,
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"view_only": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -76,8 +72,7 @@ func dataSourceRedashDataSourceRead(ctx context.Context, d *schema.ResourceData,
 	d.Set("pause_reason", data_source.PauseReason)
 	d.Set("queue_name", data_source.QueueName)
 	d.Set("syntax", data_source.Syntax)
-	d.Set("paused", strconv.Itoa(data_source.Paused))
-	d.Set("view_only", strconv.FormatBool(data_source.ViewOnly))
+	d.Set("paused", data_source.Paused)
 	d.Set("type", data_source.Type)
 	options := flattenOptionsData(data_source)
 	if err := d.Set("options", options); err != nil {

@@ -441,6 +441,10 @@ github.com/snowplow-devops/redash-client-go v0.0.0-20200904171947-95c6f8a8d3d6 h
 github.com/snowplow-devops/redash-client-go v0.0.0-20200904171947-95c6f8a8d3d6/go.mod h1:yLshuSSKyqdb12q1bKoGYs4EQfb5+B7yxP2XCDOK7R0=
 github.com/snowplow-devops/redash-client-go v0.0.0-20200904172556-fbbb01800fbc h1:oyZLL5QalEFcPAkBKahwOQ91QSK7NzjNb9TxM/YSr48=
 github.com/snowplow-devops/redash-client-go v0.0.0-20200904172556-fbbb01800fbc/go.mod h1:yLshuSSKyqdb12q1bKoGYs4EQfb5+B7yxP2XCDOK7R0=
+github.com/snowplow-devops/redash-client-go v0.1.0 h1:jvT0EQXvTXHq49bxp2s4B8V1ci7g/jxsio+iSbqSU7w=
+github.com/snowplow-devops/redash-client-go v0.1.0/go.mod h1:yLshuSSKyqdb12q1bKoGYs4EQfb5+B7yxP2XCDOK7R0=
+github.com/snowplow-devops/redash-client-go v0.2.0 h1:Rmxy0sxSG9vqUA8GCeydqYz+o3yp3rsWE2OFAg7n7sk=
+github.com/snowplow-devops/redash-client-go v0.2.0/go.mod h1:yLshuSSKyqdb12q1bKoGYs4EQfb5+B7yxP2XCDOK7R0=
 github.com/snowplow-devops/terraform-provider-redash v0.0.0-20200904161109-2c6ca4f10549 h1:6jol4pYZAfjM2BF7R4QxJ0DiBejXKfQzzldOETxLFXc=
 github.com/soheilhy/cmux v0.1.4/go.mod h1:IM3LyeVVIOuxMH7sFAkER9+bJ4dT7Ms6E4xg4kGIyLM=
 github.com/spf13/afero v1.2.2 h1:5jhuqJyZCZf2JRofRvN/nIFgIWNzPa3/Vz8mYylgbWc=

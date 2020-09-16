@@ -1,4 +1,4 @@
-package redash
+package main
 
 import (
 	"context"
@@ -8,12 +8,7 @@ import (
 	"github.com/snowplow-devops/redash-client-go/redash"
 )
 
-type Config struct {
-	RedashURL string
-	APIKey    string
-}
-
-// Provider
+// Provider function
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
@@ -24,7 +19,7 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("REDASH_API_KEY", ""),
 				Description: "Redash API Key",
 			},
-			"hostname": {
+			"redash_uri": {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("REDASH_URL", ""),
@@ -32,11 +27,14 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"redash_data_source": resourceRedashDataSource(),
-			"redash_group":       resourceRedashGroup(),
+			"redash_data_source":                  resourceRedashDataSource(),
+			"redash_group":                        resourceRedashGroup(),
+			"redash_group_user_attachment":        resourceRedashGroupUserAttachment(),
+			"redash_group_data_source_attachment": resourceRedashGroupDataSourceAttachment(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"redash_data_source": dataSourceRedashDataSource(),
+			"redash_user":        dataSourceRedashUser(),
 		},
 
 		ConfigureContextFunc: providerConfigure,
@@ -44,19 +42,19 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	api_key := d.Get("api_key").(string)
-	hostname := d.Get("hostname").(string)
+	APIKey := d.Get("api_key").(string)
+	RedashURI := d.Get("redash_uri").(string)
 
 	var diags diag.Diagnostics
 
-	if (api_key == "") || (hostname == "") {
+	c, err := redash.NewClient(&redash.Config{RedashURI: RedashURI, APIKey: APIKey})
+	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Unable to create Redash client",
-			Detail:   "Missing REDASH_API_KEY or REDASH_URL environment variables.",
+			Summary:  "Redash API Client Error",
+			Detail:   err.Error(),
 		})
 	}
-	c := redash.NewClient(&redash.Config{RedashURL: hostname, APIKey: api_key})
 
 	return c, diags
 }

@@ -1,4 +1,4 @@
-package redash
+package main
 
 import (
 	"context"
@@ -52,7 +52,7 @@ func resourceRedashGroupCreate(ctx context.Context, d *schema.ResourceData, meta
 		return diag.FromErr(err)
 	}
 
-	d.SetId(fmt.Sprint(group.Id))
+	d.SetId(fmt.Sprint(group.ID))
 
 	//resourceRedashGroupRead(ctx, d, meta)
 
@@ -78,7 +78,7 @@ func resourceRedashGroupRead(ctx context.Context, d *schema.ResourceData, meta i
 	d.Set("type", &group.Type)
 	d.Set("permissions", &group.Permissions)
 
-	d.SetId(fmt.Sprint(group.Id))
+	d.SetId(fmt.Sprint(group.ID))
 
 	return diags
 }

@@ -13,3 +13,14 @@
 
 # Dependency directories (remove the comment below to include it)
 vendor/
+
+# IntelliJ
+.idea
+
+# macOS
+.DS_Store
+
+# Project
+build/
+dist/
+.release.yml.tmp

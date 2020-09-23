@@ -1,0 +1,50 @@
+name: cd
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  release:
+    name: Release
+    strategy:
+      matrix:
+        go-version: [1.15]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      BINTRAY_SNOWPLOW_GENERIC_USER: ${{ secrets.GLOBAL_BINTRAY_SNOWPLOW_GENERIC_USER }}
+      BINTRAY_SNOWPLOW_GENERIC_API_KEY: ${{ secrets.GLOBAL_BINTRAY_SNOWPLOW_GENERIC_API_KEY }}
+
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Cache go modules
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - name: Compile
+      run: make all
+
+    - name: Install Release Manager
+      run: |
+        sudo pip install pyOpenSSL==16.2.0
+        sudo pip install release-manager==0.4.1
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+    - name: Publish to Bintray
+      run: make release
+      env:
+        GITHUB_TAG: ${{ steps.get_version.outputs.VERSION }}

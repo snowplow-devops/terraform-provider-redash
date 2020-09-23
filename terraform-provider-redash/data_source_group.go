@@ -13,14 +13,44 @@
 package main
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/snowplow-devops/redash-client-go/redash"
 )
 
-func main() {
-	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: func() *schema.Provider {
-			return Provider()
+func dataSourceRedashGroup() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"id": {
+				Type:     schema.TypeInt,
+				Required: true,
+			},
+			"name": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 		},
-	})
+		ReadContext: dataSourceRedashGroupRead,
+	}
+}
+
+func dataSourceRedashGroupRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	c := meta.(*redash.Client)
+
+	var diags diag.Diagnostics
+
+	id := d.Get("id").(int)
+	group, err := c.GetGroup(id)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	d.Set("name", group.Name)
+
+	d.SetId(fmt.Sprint(group.ID))
+
+	return diags
 }

@@ -1,0 +1,35 @@
+---
+local:
+  root_dir : <%= ENV['GITHUB_WORKSPACE'] %>
+
+targets:
+  - type     : "bintray"
+    user     : <%= ENV['BINTRAY_SNOWPLOW_GENERIC_USER'] %>
+    password : <%= ENV['BINTRAY_SNOWPLOW_GENERIC_API_KEY'] %>
+
+packages:
+  - repo     : "snowplow-generic"
+    name     : "terraform-provider-redash"
+    user_org : "snowplow"
+    publish  : true
+    override : false
+    continue_on_conflict: false
+    version  : <%= CMD['cat VERSION'] %>
+    build_version : <%= ENV['GITHUB_TAG'] %>
+
+    artifacts:
+      - prefix : "terraform_provider_redash_"
+        suffix : "_linux_amd64"
+        type   : "zip"
+        binary_paths:
+          - build/output/linux/terraform-provider-redash_v<%= CMD['cat VERSION'] %>
+      - prefix : "terraform_provider_redash_"
+        suffix : "_darwin_amd64"
+        type   : "zip"
+        binary_paths:
+          - build/output/darwin/terraform-provider-redash_v<%= CMD['cat VERSION'] %>
+      - prefix : "terraform_provider_redash_"
+        suffix : "_windows_amd64"
+        type   : "zip"
+        binary_paths:
+          - build/output/windows/terraform-provider-redash_v<%= CMD['cat VERSION'] %>.exe

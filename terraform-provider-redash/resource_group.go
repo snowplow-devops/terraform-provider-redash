@@ -1,3 +1,15 @@
+//
+// Copyright (c) 2020 Snowplow Analytics Ltd. All rights reserved.
+//
+// This program is licensed to you under the Apache License Version 2.0,
+// and you may not use this file except in compliance with the Apache License Version 2.0.
+// You may obtain a copy of the Apache License Version 2.0 at http://www.apache.org/licenses/LICENSE-2.0.
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the Apache License Version 2.0 is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
+//
 package main
 
 import (
@@ -42,19 +54,18 @@ func resourceRedashGroupCreate(ctx context.Context, d *schema.ResourceData, meta
 
 	var diags diag.Diagnostics
 
-	payload := redash.Group{
+	payload := redash.GroupCreatePayload{
 		Name: d.Get("name").(string),
-		//Permissions: []d.Get("permissions").([]string),
 	}
 
-	group, err := c.CreateGroup(payload)
+	group, err := c.CreateGroup(&payload)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
 	d.SetId(fmt.Sprint(group.ID))
 
-	//resourceRedashGroupRead(ctx, d, meta)
+	resourceRedashGroupRead(ctx, d, meta)
 
 	return diags
 }
@@ -92,12 +103,11 @@ func resourceRedashGroupUpdate(ctx context.Context, d *schema.ResourceData, meta
 	}
 
 	payload := redash.Group{
-		Name:        d.Get("name").(string),
-		Type:        d.Get("type").(string),
-		Permissions: d.Get("permissions").([]string),
+		Name: d.Get("name").(string),
+		Type: d.Get("type").(string),
 	}
 
-	_, err = c.UpdateGroup(id, payload)
+	_, err = c.UpdateGroup(id, &payload)
 	if err != nil {
 		return diag.FromErr(err)
 	}

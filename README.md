@@ -37,9 +37,9 @@ To format the golang code in the source directory:
 
 First download the pre-compiled binary for your platform from our Bintray at the following links or generate the binaries locally using the provided `make` command:
 
-* [Darwin (macOS)](https://github.com/snowplow-devops/terraform-provider-redash/releases/0.1.1/download/terraform_provider_redash_0.1.1_darwin_amd64.zip)
-* [Linux](https://github.com/snowplow-devops/terraform-provider-redash/releases/0.1.1/download/terraform_provider_redash_0.1.1_linux_amd64.zip)
-* [Windows](https://github.com/snowplow-devops/terraform-provider-redash/releases/0.1.1/download/terraform_provider_redash_0.1.1_windows_amd64.zip)
+* [Darwin (macOS)](https://github.com/snowplow-devops/terraform-provider-redash/releases/latest/download/terraform_provider_redash_0.1.1_darwin_amd64.zip)
+* [Linux](https://github.com/snowplow-devops/terraform-provider-redash/releases/latest/download/terraform_provider_redash_0.1.1_linux_amd64.zip)
+* [Windows](https://github.com/snowplow-devops/terraform-provider-redash/releases/latest/download/terraform_provider_redash_0.1.1_windows_amd64.zip)
 
 Once downloaded "unzip" to extract the binary which should be called `terraform-provider-redash_v0.1.0`.
 

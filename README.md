@@ -41,7 +41,7 @@ First download the pre-compiled binary for your platform from our Bintray at the
 * [Linux](https://github.com/snowplow-devops/terraform-provider-redash/releases/latest/download/terraform_provider_redash_0.1.1_linux_amd64.zip)
 * [Windows](https://github.com/snowplow-devops/terraform-provider-redash/releases/latest/download/terraform_provider_redash_0.1.1_windows_amd64.zip)
 
-Once downloaded "unzip" to extract the binary which should be called `terraform-provider-redash_v0.1.0`.
+Once downloaded "unzip" to extract the binary which should be called `terraform-provider-redash_v0.1.1`.
 
 From here you will need to move the binary into your Terraform plugins directory - depending on your platform / installation this might change but generally speaking they are located at:
 

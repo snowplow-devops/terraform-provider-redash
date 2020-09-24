@@ -13,11 +13,9 @@ jobs:
         go-version: [1.15]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
-    env:
-      BINTRAY_SNOWPLOW_GENERIC_USER: ${{ secrets.GLOBAL_BINTRAY_SNOWPLOW_GENERIC_USER }}
-      BINTRAY_SNOWPLOW_GENERIC_API_KEY: ${{ secrets.GLOBAL_BINTRAY_SNOWPLOW_GENERIC_API_KEY }}
-
     steps:
+
+
     - name: Install Go
       uses: actions/setup-go@v2
       with:
@@ -26,6 +24,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set version
+      run: echo ::set-env name=VERSION::$(cat VERSION)
+
     - name: Cache go modules
       uses: actions/cache@v2
       with:
@@ -33,18 +34,57 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
+
     - name: Compile
       run: make all
 
-    - name: Install Release Manager
+    - name: Prep Linux
       run: |
-        sudo pip install pyOpenSSL==16.2.0
-        sudo pip install release-manager==0.4.1
-    - name: Get the version
-      id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        zip --junk-paths terraform_provider_redash_${VERSION}_linux_amd64.zip build/output/linux/terraform-provider-redash_v${VERSION}
+    - name: Prep Darwin
+      run: |
+        zip --junk-paths terraform_provider_redash_${VERSION}_darwin_amd64.zip build/output/darwin/terraform-provider-redash_v${VERSION}
+    - name: Prep Windows
+      run: |
+        zip --junk-paths terraform_provider_redash_${VERSION}_windows_amd64.zip build/output/windows/terraform-provider-redash_v${VERSION}.exe
 
-    - name: Publish to Bintray
-      run: make release
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
       env:
-        GITHUB_TAG: ${{ steps.get_version.outputs.VERSION }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Linux
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./terraform_provider_redash_${{ env.VERSION }}_linux_amd64.zip
+        asset_name: terraform_provider_redash_${{ env.VERSION }}_linux_amd64.zip
+        asset_content_type: application/zip
+
+    - name: Upload Darwin
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./terraform_provider_redash_${{ env.VERSION }}_darwin_amd64.zip
+        asset_name: terraform_provider_redash_${{ env.VERSION }}_darwin_amd64.zip
+        asset_content_type: application/zip
+
+    - name: Upload Windows
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./terraform_provider_redash_${{ env.VERSION }}_windows_amd64.zip
+        asset_name: terraform_provider_redash_${{ env.VERSION }}_windows_amd64.zip
+        asset_content_type: application/zip

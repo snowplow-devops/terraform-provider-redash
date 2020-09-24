@@ -11,7 +11,7 @@ Assuming git is installed:
 
 ```bash
  host> git clone https://github.com/snowplow-devops/terraform-provider-redash
- host> cd terraform-provider-snowplow
+ host> cd terraform-provider-redash
  host> make test
  host> make
 ```
@@ -54,8 +54,9 @@ From here you will need to move the binary into your Terraform plugins directory
 
 To actually start tracking Snowplow events from Terraform you will need to configure the `provider` and a `resource`:
 
+Before using the provider, you will need an environment variable set with your personal API Key (which can be found in your Redash profile)
 ```bash
-export REDASH_API_KEY="<YourPersonalAPIKeyHere>"
+$ export REDASH_API_KEY="<YourPersonalAPIKeyHere>"
 ```
 
 ```hcl
@@ -83,14 +84,13 @@ resource "redash_user" "wcoyote" {
 
 ### Groups ###
 ```hcl
-data "redash_group" "runners" {
+data "redash_group" "genuises" {
   id = 35
 }
 
-resource "redash_group" "genuises" {
+resource "redash_group" "runners" {
   name = "Beep Beep"
 }
-
 ```
 
 ### Data Sources ###
@@ -116,10 +116,13 @@ resource "redash_data_source" "acme_corp" {
 }
 
 resource "redash_group_data_source_attachment" "wcoyote_acme" {
-  group_id       = "${redash_group.genuises.id}"
-  data_source_id = "${redash_data_source.acme_corp.id}"
+  group_id       = redash_group.genuises.id
+  data_source_id = redash_data_source.acme_corp.id
 }
 ```
+
+A complete terraform file with interactive examples can be found in
+* https://github.com/snowplow-devops/terraform-provider-redash/tree/master/examples 
 
 ### Publishing
 

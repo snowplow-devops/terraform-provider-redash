@@ -22,26 +22,26 @@ resource "redash_data_source" "acme_corp" {
   }
 }
 
-resource "redash_group" "genuises" {
+resource "redash_group" "geniuses" {
   name = "ACME Users"
 }
 
 resource "redash_user" "wcoyote" {
   name   = "Wile E. Coyote"
   email  = "wcoyote@acme.com"
-  groups = [redash_group.genuises.id]
+  groups = [redash_group.geniuses.id]
 
   depends_on = [
-    redash_group.genuises,
+    redash_group.geniuses,
   ]
 }
 
 resource "redash_group_data_source_attachment" "wcoyote_acme" {
-  group_id       = redash_group.genuises.id
+  group_id       = redash_group.geniuses.id
   data_source_id = redash_data_source.acme_corp.id
 
     depends_on = [
-    redash_group.genuises,
+    redash_group.geniuses,
     redash_data_source.acme_corp,
   ]
 }

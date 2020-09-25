@@ -1,4 +1,4 @@
-.PHONY: all format lint tidy test release release-dry clean
+.PHONY: all format lint tidy test clean
 
 # -----------------------------------------------------------------------------
 #  CONSTANTS
@@ -61,18 +61,9 @@ test:
 	GO111MODULE=on go tool cover -html=$(coverage_out) -o $(coverage_html)
 
 # -----------------------------------------------------------------------------
-#  RELEASE
-# -----------------------------------------------------------------------------
-
-release:
-	release-manager --config .release.yml --check-version --make-artifact --make-version --upload-artifact
-
-release-dry:
-	release-manager --config .release.yml --check-version --make-artifact
-
-# -----------------------------------------------------------------------------
 #  CLEANUP
 # -----------------------------------------------------------------------------
 
 clean:
 	rm -rf $(build_dir)
+	

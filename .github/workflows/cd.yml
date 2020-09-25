@@ -3,88 +3,45 @@ name: cd
 on:
   push:
     tags:
-    - '*'
+    - 'v*'
 
 jobs:
-  release:
-    name: Release
-    strategy:
-      matrix:
-        go-version: [1.15]
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-
-
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go-version }}
-
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set version
-      run: echo ::set-env name=VERSION::$(cat VERSION)
-
-    - name: Cache go modules
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-
-    - name: Compile
-      run: make all
-
-    - name: Prep Linux
-      run: |
-        zip --junk-paths terraform_provider_redash_${VERSION}_linux_amd64.zip build/output/linux/terraform-provider-redash_v${VERSION}
-    - name: Prep Darwin
-      run: |
-        zip --junk-paths terraform_provider_redash_${VERSION}_darwin_amd64.zip build/output/darwin/terraform-provider-redash_v${VERSION}
-    - name: Prep Windows
-      run: |
-        zip --junk-paths terraform_provider_redash_${VERSION}_windows_amd64.zip build/output/windows/terraform-provider-redash_v${VERSION}.exe
-
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-
-    - name: Upload Linux
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./terraform_provider_redash_${{ env.VERSION }}_linux_amd64.zip
-        asset_name: terraform_provider_redash_${{ env.VERSION }}_linux_amd64.zip
-        asset_content_type: application/zip
-
-    - name: Upload Darwin
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./terraform_provider_redash_${{ env.VERSION }}_darwin_amd64.zip
-        asset_name: terraform_provider_redash_${{ env.VERSION }}_darwin_amd64.zip
-        asset_content_type: application/zip
-
-    - name: Upload Windows
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./terraform_provider_redash_${{ env.VERSION }}_windows_amd64.zip
-        asset_name: terraform_provider_redash_${{ env.VERSION }}_windows_amd64.zip
-        asset_content_type: application/zip
+  goreleaser:
+      runs-on: ubuntu-latest
+      steps:
+        -
+          name: Checkout
+          uses: actions/checkout@v2
+        -
+          name: Unshallow
+          run: git fetch --prune --unshallow
+        -
+          name: Set up Go
+          uses: actions/setup-go@v2
+          with:
+            go-version: 1.15
+        -
+          name: Cache go modules
+          uses: actions/cache@v2
+          with:
+            path: ~/go/pkg/mod
+            key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+            restore-keys: |
+              ${{ runner.os }}-go-
+        -
+          name: Import GPG key
+          id: import_gpg
+          uses: paultyng/ghaction-import-gpg@v2.1.0
+          env:
+            GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+            PASSPHRASE: ${{ secrets.PASSPHRASE }}
+        -
+          name: Run GoReleaser
+          uses: goreleaser/goreleaser-action@v2
+          with:
+            version: latest
+            args: release --rm-dist
+            workdir: ./terraform-provider-redash
+          env:
+            GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

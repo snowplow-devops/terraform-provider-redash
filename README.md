@@ -80,7 +80,7 @@ resource "redash_user" "wcoyote" {
 
 ### Groups ###
 ```hcl
-data "redash_group" "genuises" {
+data "redash_group" "geniuses" {
   id = 35
 }
 
@@ -112,7 +112,7 @@ resource "redash_data_source" "acme_corp" {
 }
 
 resource "redash_group_data_source_attachment" "wcoyote_acme" {
-  group_id       = redash_group.genuises.id
+  group_id       = redash_group.geniuses.id
   data_source_id = redash_data_source.acme_corp.id
 }
 ```

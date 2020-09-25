@@ -48,13 +48,11 @@ func resourceRedashDataSource() *schema.Resource {
 			},
 			"paused": {
 				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  0,
+				Computed: true,
 			},
 			"pause_reason": {
 				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
+				Computed: true,
 			},
 			"type": {
 				Type:     schema.TypeString,
@@ -75,7 +73,6 @@ func resourceRedashDataSource() *schema.Resource {
 			"options": {
 				Type:     schema.TypeList,
 				Required: true,
-				ForceNew: true,
 				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{

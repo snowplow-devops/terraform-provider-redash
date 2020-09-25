@@ -26,39 +26,39 @@ func dataSourceRedashDataSource() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:     schema.TypeInt,
-				Optional: true,
+				Required: true,
 			},
 			"name": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Computed: true,
 			},
 			"scheduled_queue_name": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Computed: true,
 			},
 			"queue_name": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Computed: true,
 			},
 			"paused": {
 				Type:     schema.TypeInt,
-				Optional: true,
+				Computed: true,
 			},
 			"pause_reason": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Computed: true,
 			},
 			"type": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Computed: true,
 			},
 			"syntax": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Computed: true,
 			},
 			"options": {
 				Type:     schema.TypeMap,
-				Optional: true,
+				Computed: true,
 			},
 		},
 		ReadContext: dataSourceRedashDataSourceRead,

@@ -1,16 +1,16 @@
 # Group Data Source
 
-Data source representation of an active Redash Data Source.
+Data source representation of an active Redash Group
 
 ## Example Usage
 
 ```hcl
-data "redash_group" "genuises" {
+data "redash_group" "geniuses" {
     id = 1
 }
 
 output "example" {
-  value = "${jsonencode(data.redash_group.genuises)}"
+  value = "${jsonencode(data.redash_group.geniuses)}"
 }
 ```
 

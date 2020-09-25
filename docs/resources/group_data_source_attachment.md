@@ -6,11 +6,11 @@ The Group Data Source Attachment Resource allows management of Redash Data Sourc
 
 ```hcl
 resource "redash_group_data_source_attachment" "wcoyote_acme" {
-  group_id       = redash_group.genuises.id
+  group_id       = redash_group.geniuses.id
   data_source_id = redash_data_source.acme_corp.id
 
     depends_on = [
-    redash_group.genuises,
+    redash_group.geniuses,
     redash_data_source.acme_corp,
   ]
 }

@@ -27,7 +27,7 @@ output "example" {
 
 * `name` - (Required) The title of the Data Source
 * `type` - (Required) The Data Source type (check with Redash for latest)
-* `options` - (Required) An object storing the options for this Data Source. Check with Redash for required options by data source type. 
+* `options` - (Required) An object storing the options for this Data Source (check with Redash for required options by data source type)
 
 ## Attribute Reference
 

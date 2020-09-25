@@ -1,3 +1,7 @@
+Version 0.2.0 (2020-09-25)
+--------------------------
+Adding GoReleaser support for release management
+
 Version 0.1.1 (2020-09-24)
 --------------------------
 Adding GitHub Actions Release management

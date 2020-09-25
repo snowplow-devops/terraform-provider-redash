@@ -1,3 +1,11 @@
+Version 0.2.1 (2020-09-25)
+--------------------------
+Updating documentation for Terraform Provider register
+
+Version 0.2.0 (2020-09-25)
+--------------------------
+Added GoReleaser to support Terraform Provider register
+
 Version 0.1.1 (2020-09-24)
 --------------------------
 Adding GitHub Actions Release management

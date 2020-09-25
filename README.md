@@ -35,13 +35,9 @@ To format the golang code in the source directory:
 
 ## Installation
 
-First download the pre-compiled binary for your platform from our Bintray at the following links or generate the binaries locally using the provided `make` command:
+First download the pre-compiled binary for your platform from the release assets at the following links or generate the binaries locally using the provided `make` command:
 
-* [Darwin (macOS)](https://github.com/snowplow-devops/terraform-provider-redash/releases/latest/download/terraform_provider_redash_0.1.1_darwin_amd64.zip)
-* [Linux](https://github.com/snowplow-devops/terraform-provider-redash/releases/latest/download/terraform_provider_redash_0.1.1_linux_amd64.zip)
-* [Windows](https://github.com/snowplow-devops/terraform-provider-redash/releases/latest/download/terraform_provider_redash_0.1.1_windows_amd64.zip)
-
-Once downloaded "unzip" to extract the binary which should be called `terraform-provider-redash_v0.1.1`.
+https://github.com/snowplow-devops/terraform-provider-redash/releases/latest
 
 From here you will need to move the binary into your Terraform plugins directory - depending on your platform / installation this might change but generally speaking they are located at:
 
@@ -121,8 +117,7 @@ resource "redash_group_data_source_attachment" "wcoyote_acme" {
 }
 ```
 
-A complete terraform file with interactive examples can be found in
-* https://github.com/snowplow-devops/terraform-provider-redash/tree/master/examples 
+For more detailed documentation, please see the Terraform Provider documentaton at https://registry.terraform.io/providers/snowplow-devops/redash/latest
 
 ### Publishing
 

@@ -28,6 +28,9 @@ func resourceRedashGroup() *schema.Resource {
 		ReadContext:   resourceRedashGroupRead,
 		UpdateContext: resourceRedashGroupUpdate,
 		DeleteContext: resourceRedashGroupDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

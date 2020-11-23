@@ -28,6 +28,9 @@ func resourceRedashDataSource() *schema.Resource {
 		ReadContext:   resourceRedashDataSourceRead,
 		UpdateContext: resourceRedashDataSourceUpdate,
 		DeleteContext: resourceRedashDataSourceDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 		Schema: map[string]*schema.Schema{
 			"last_updated": {
 				Type:     schema.TypeString,

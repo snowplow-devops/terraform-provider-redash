@@ -3,8 +3,8 @@ module github.com/snowplow-devops/terraform-provider-redash
 go 1.15
 
 require (
-	github.com/hashicorp/go-version v1.2.1 // indirect
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.0.1
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.6.1
 	github.com/snowplow-devops/redash-client-go v0.4.1
-	golang.org/x/tools v0.0.0-20201123155928-5bad45943a20 // indirect
+	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
+	golang.org/x/tools v0.1.3 // indirect
 )

@@ -446,6 +446,27 @@ func resourceRedashDataSource() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
+						"ssh_tunnel": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Optional: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"ssh_username": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"ssh_port": {
+										Type:     schema.TypeInt,
+										Optional: true,
+									},
+									"ssh_host": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -591,19 +612,26 @@ func convertOptions(options *map[string]interface{}, toFormat string) map[string
 	convertedOptions := map[string]interface{}{}
 
 	for k, v := range *options {
-		if toFormat == "redash" {
-			if val, ok := redashConversion[k]; ok {
-				convertedOptions[val] = v
-			} else {
-				convertedOptions[k] = v
+		switch value := v.(type) {
+		case []interface{}:
+			if k == "ssh_tunnel" && len(value) > 0 {
+				convertedOptions[k] = value[0]
 			}
-		}
+		default:
+			if toFormat == "redash" {
+				if val, ok := redashConversion[k]; ok {
+					convertedOptions[val] = v
+				} else {
+					convertedOptions[k] = v
+				}
+			}
 
-		if toFormat == "terraform" {
-			if val, ok := terraformConversion[k]; ok {
-				convertedOptions[val] = v
-			} else {
-				convertedOptions[k] = v
+			if toFormat == "terraform" {
+				if val, ok := terraformConversion[k]; ok {
+					convertedOptions[val] = v
+				} else {
+					convertedOptions[k] = v
+				}
 			}
 		}
 	}

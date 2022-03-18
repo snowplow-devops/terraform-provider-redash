@@ -1,3 +1,7 @@
+Version 0.70 (2022-03-17)
+--------------------------
+Adding SSH tunnel support (#15) - thanks @agutoli! 
+
 Version 0.6.0 (2021-08-17)
 --------------------------
 Add Darwin arm64 support (#12)

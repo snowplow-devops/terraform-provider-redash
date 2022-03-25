@@ -594,6 +594,7 @@ func convertOptions(options *map[string]interface{}, toFormat string) map[string
 		"total_mbytes_processed_limit":       "totalMBytesProcessedLimit",
 		"use_standard_sql":                   "useStandardSql",
 		"user_defined_function_resource_uri": "userDefinedFunctionResourceUri",
+		"use_ssl":                            "useSsl",
 	}
 
 	terraformConversion := map[string]string{
@@ -607,6 +608,7 @@ func convertOptions(options *map[string]interface{}, toFormat string) map[string
 		"totalMBytesProcessedLimit":      "total_mbytes_processed_limit",
 		"useStandardSql":                 "use_standard_sql",
 		"userDefinedFunctionResourceUri": "user_defined_function_resource_uri",
+		"useSsl":                         "use_ssl",
 	}
 
 	convertedOptions := map[string]interface{}{}

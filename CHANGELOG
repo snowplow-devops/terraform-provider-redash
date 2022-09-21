@@ -1,3 +1,11 @@
+Version 0.8.0 (2022-09-21)
+--------------------------
+Update Go Version to 1.18 and update dependencies (#21)
+
+Version 0.7.0 (2022-03-17)
+--------------------------
+Add SSH Tunnel support (#14)
+
 Version 0.6.0 (2021-08-17)
 --------------------------
 Add Darwin arm64 support (#12)

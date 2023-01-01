@@ -1,3 +1,7 @@
+Version 0.8.1 (2023-01-02)
+--------------------------
+Bump dependencies for Snyk (#22)
+
 Version 0.8.0 (2022-09-21)
 --------------------------
 Update Go Version to 1.18 and update dependencies (#21)

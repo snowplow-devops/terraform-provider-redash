@@ -1,3 +1,7 @@
+Version 0.8.2 (2023-09-13)
+--------------------------
+Bump dependencies for Snyk (#26, #27)
+
 Version 0.8.1 (2023-01-02)
 --------------------------
 Bump dependencies for Snyk (#22)

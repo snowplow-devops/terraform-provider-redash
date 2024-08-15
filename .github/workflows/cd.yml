@@ -40,7 +40,7 @@ jobs:
           uses: goreleaser/goreleaser-action@v2
           with:
             version: latest
-            args: release --rm-dist
+            args: release --clean
             workdir: ./terraform-provider-redash
           env:
             GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}

@@ -32,7 +32,6 @@ To format the golang code in the source directory:
 
 **Note:** The `make test` command also generates a code coverage file which can be found at `build/coverage/coverage.html`.
 
-
 ## Installation
 
 First download the pre-compiled binary for your platform from the release assets at the following links or generate the binaries locally using the provided `make` command:
@@ -51,6 +50,7 @@ From here you will need to move the binary into your Terraform plugins directory
 To actually start tracking Snowplow events from Terraform you will need to configure the `provider` and a `resource`:
 
 Before using the provider, you will need an environment variable set with your personal API Key (which can be found in your Redash profile)
+
 ```bash
 $ export REDASH_API_KEY="<YourPersonalAPIKeyHere>"
 ```
@@ -65,6 +65,7 @@ provider "redash" {
 With the provider configured, we can now use data sources and manage resources.
 
 ### Users ###
+
 ```hcl
 data "redash_user" "rrunner" {
   id = 1
@@ -75,10 +76,10 @@ resource "redash_user" "wcoyote" {
   email  = "wcoyote@acme.com"
   groups = [32,1]
 }
-
 ```
 
 ### Groups ###
+
 ```hcl
 data "redash_group" "geniuses" {
   id = 35
@@ -125,7 +126,7 @@ This is handled through CI/CD on Github Actions. However all binaries will be ge
 
 ### Copyright and license
 
-The Terraform Redash Provider is copyright 2019-2020 Snowplow Analytics Ltd.
+The Terraform Redash Provider is copyright 2019-current Snowplow Analytics Ltd.
 
 Licensed under the **[Apache License, Version 2.0][license]** (the "License");
 you may not use this software except in compliance with the License.

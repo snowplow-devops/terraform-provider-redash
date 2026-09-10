@@ -1,3 +1,7 @@
+Version 0.8.10 (2026-09-10)
+--------------------------
+Remove Snyk from workflow (#44)
+
 Version 0.8.9 (2024-08-16)
 --------------------------
 Fix version in goreleaser (#37)

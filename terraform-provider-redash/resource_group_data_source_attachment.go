@@ -17,7 +17,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/id"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/snowplow-devops/redash-client-go/redash"
 )
@@ -55,7 +55,7 @@ func resourceRedashGroupDataSourceAttachmentCreate(ctx context.Context, d *schem
 		return diag.FromErr(err)
 	}
 
-	d.SetId(resource.PrefixedUniqueId(fmt.Sprintf("%d-%d", groupID, dataSourceID)))
+	d.SetId(id.PrefixedUniqueId(fmt.Sprintf("%d-%d", groupID, dataSourceID)))
 
 	return diags
 }

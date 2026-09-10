@@ -1,5 +1,5 @@
 # Redash Terraform Provider #
-[![Actions Status][actions-image]][actions] [![Go Report Card][goreport-image]][goreport] [![Release][release-image]][releases] [![License][license-image]][license]
+[![Actions Status][actions-image]][actions] [![Release][release-image]][releases] [![License][license-image]][license]
 
 ## Overview ##
 
@@ -145,6 +145,3 @@ limitations under the License.
 
 [license-image]: http://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
 [license]: http://www.apache.org/licenses/LICENSE-2.0
-
-[goreport-image]: https://goreportcard.com/badge/github.com/snowplow-devops/terraform-provider-redash
-[goreport]: https://goreportcard.com/report/github.com/snowplow-devops/terraform-provider-redash

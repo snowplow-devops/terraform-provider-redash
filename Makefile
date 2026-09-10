@@ -45,9 +45,8 @@ format:
 	GO111MODULE=on gofmt -s -w ./$(src_dir)
 
 lint:
-	GO111MODULE=on go get -u golang.org/x/lint/golint
-	GO111MODULE=on go install golang.org/x/lint/golint
-	GO111MODULE=on golint ./$(src_dir)
+	GO111MODULE=on go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2
+	GO111MODULE=on golangci-lint run ./$(src_dir)/...
 
 tidy:
 	GO111MODULE=on go mod tidy

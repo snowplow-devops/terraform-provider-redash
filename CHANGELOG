@@ -1,5 +1,9 @@
+Version 0.8.11 (2026-09-10)
+---------------------------
+Remove go-report (#47)
+
 Version 0.8.10 (2026-09-10)
---------------------------
+---------------------------
 Remove Snyk from workflow (#44)
 Bump versions for CVEs (#45)
 

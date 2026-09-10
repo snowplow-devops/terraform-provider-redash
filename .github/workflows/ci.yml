@@ -12,21 +12,21 @@ jobs:
     name: Compile & Test
     strategy:
       matrix:
-        go-version: ['1.21']
+        go-version: ['1.26.8']
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
     - name: Install Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
       with:
         go-version: ${{ matrix.go-version }}
 
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
     - name: Cache go modules
-      uses: actions/cache@v2
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}

@@ -290,9 +290,9 @@ func TestResourceAlertDestination_import(t *testing.T) {
 	if got := d.Get("type"); got != "pagerduty" {
 		t.Errorf("expected type pagerduty, got %q", got)
 	}
-	// The masked secret can't be recovered on import, so it's left out
-	// rather than stored as the placeholder.
-	want := map[string]string{"description": "Redash alert"}
+	// The masked secret can't be recovered on import, so the placeholder is
+	// kept. The next plan then shows the change to the configured value.
+	want := map[string]string{"integration_key": redashSecretPlaceholder, "description": "Redash alert"}
 	if got := stringMap(d.Get("options")); !reflect.DeepEqual(got, want) {
 		t.Errorf("options after import: got %v, want %v", got, want)
 	}
@@ -439,9 +439,45 @@ func TestMergeAlertDestinationOptions(t *testing.T) {
 	remote := map[string]string{"url": "u", "password": redashSecretPlaceholder, "api_token": redashSecretPlaceholder}
 	prior := map[string]interface{}{"url": "old", "password": "s3cret"}
 
-	want := map[string]string{"url": "u", "password": "s3cret"}
+	want := map[string]string{"url": "u", "password": "s3cret", "api_token": redashSecretPlaceholder}
 	if got := mergeAlertDestinationOptions(remote, prior); !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v, want %v", got, want)
+	}
+}
+
+// A secret added outside Terraform must show up in the plan. If it were
+// hidden, the next update would silently erase it in Redash.
+func TestResourceAlertDestination_secretAddedOutsideTerraformShowsInPlan(t *testing.T) {
+	f, c := newFakeRedash(t)
+	ctx := context.Background()
+	res := Provider().ResourcesMap["redash_alert_destination"]
+
+	cfg := map[string]interface{}{
+		"name":    "Ops webhook",
+		"type":    "webhook",
+		"options": map[string]interface{}{"url": "https://hooks.example.com/redash"},
+	}
+	d := alertDestinationResourceData(t, cfg)
+	if diags := resourceRedashAlertDestinationCreate(ctx, d, c); diags.HasError() {
+		t.Fatalf("create: %v", diags)
+	}
+
+	// Someone adds a password in the Redash UI.
+	f.destination(1)["options"].(map[string]interface{})["password"] = "added-in-ui"
+
+	if diags := resourceRedashAlertDestinationRead(ctx, d, c); diags.HasError() {
+		t.Fatalf("read: %v", diags)
+	}
+	if got := d.Get("options.password"); got != redashSecretPlaceholder {
+		t.Errorf("expected the unseen secret to be kept as the placeholder, got %q", got)
+	}
+
+	diff, err := res.Diff(ctx, d.State(), terraformResourceConfig(cfg), nil)
+	if err != nil {
+		t.Fatalf("diff: %s", err)
+	}
+	if diff == nil || diff.Attributes["options.password"] == nil || !diff.Attributes["options.password"].NewRemoved {
+		t.Errorf("expected the plan to show the password being removed, got %v", diff)
 	}
 }
 

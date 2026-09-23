@@ -208,16 +208,17 @@ func flattenAlertDestination(destination interface{}, err error) (*alertDestinat
 }
 
 // mergeAlertDestinationOptions keeps the value from state for any option that
-// Redash returns masked, so secrets don't show a diff on every plan. A masked
-// option with no prior value (e.g. on import) is left out.
+// Redash returns masked, so secrets don't show a diff on every plan.
+//
+// A masked option with no prior value (e.g. after import, or a secret added in
+// the Redash UI) keeps the placeholder. Dropping it would hide the secret from
+// the plan, and the next update would then erase it in Redash, because Redash
+// replaces the whole options object rather than merging it.
 func mergeAlertDestinationOptions(remote map[string]string, prior map[string]interface{}) map[string]string {
 	merged := map[string]string{}
 	for k, v := range remote {
-		if v == redashSecretPlaceholder {
-			if p, ok := prior[k]; ok {
-				merged[k] = p.(string)
-			}
-			continue
+		if p, ok := prior[k]; ok && v == redashSecretPlaceholder {
+			v = p.(string)
 		}
 		merged[k] = v
 	}

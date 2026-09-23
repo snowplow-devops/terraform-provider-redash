@@ -43,7 +43,7 @@ resource "redash_alert_destination" "ops_webhook" {
 | `pagerduty`     | `integration_key`, `description`                         |
 | `hangouts_chat` | `url`, `icon_url`                                        |
 
-Redash never returns secret options (such as `password`, `api_token` or `integration_key`) once they are set, so the provider keeps the value from Terraform state. As a result, changes made to secrets outside Terraform are not detected.
+Redash never returns secret options (such as `password`, `api_token` or `integration_key`) once they are set, so the provider keeps the value from Terraform state. As a result, changes made outside Terraform to a secret that's in your configuration are not detected. A secret that's set in Redash but not in your configuration is stored in state as `--------`, so the plan shows it being removed.
 
 ## Attribute Reference
 
@@ -58,4 +58,4 @@ Alert destinations can be imported using their Redash ID:
 terraform import redash_alert_destination.ops_email 1
 ```
 
-Secret options can't be read back from Redash, so they are left out after import. Set them in your configuration and run `terraform apply` to bring state in line.
+Secret options can't be read back from Redash, so after import they are stored in state as `--------`. Set them in your configuration and run `terraform apply` to bring state in line.

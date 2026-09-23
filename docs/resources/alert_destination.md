@@ -31,7 +31,7 @@ resource "redash_alert_destination" "ops_webhook" {
 
 * `name` - (Required) Name of the alert destination
 * `type` - (Required) Destination type, e.g. `email`, `slack`, `webhook`, `mattermost`, `chatwork`, `pagerduty`, `hangouts_chat`
-* `options` - (Required, Sensitive) Map of type-specific options. For the types listed below, only the listed options are accepted and any other option fails at plan time. Options for any other type are passed to Redash as-is.
+* `options` - (Required, Sensitive) Map of type-specific options. For the types listed below, only the listed options are accepted and any other option fails at plan time. Options for any other type are passed to Redash as-is. Option values can't be empty; leave the option out instead.
 
 | Type            | Options                                                  |
 |-----------------|----------------------------------------------------------|

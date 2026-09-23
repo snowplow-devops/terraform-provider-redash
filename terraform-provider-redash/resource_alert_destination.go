@@ -114,6 +114,20 @@ func alertDestinationOptionKeys(destinationType string) (map[string]bool, bool) 
 }
 
 func validateAlertDestinationOptions(destinationType string, options map[string]interface{}) error {
+	// Empty values are dropped when reading a destination back (see
+	// flattenAlertDestination), so one set in config would show a diff on
+	// every plan. Leaving the option out has the same effect.
+	var empty []string
+	for k, v := range options {
+		if v == "" {
+			empty = append(empty, k)
+		}
+	}
+	if len(empty) > 0 {
+		sort.Strings(empty)
+		return fmt.Errorf("alert destination options can't be empty, remove them instead: %s", strings.Join(empty, ", "))
+	}
+
 	allowed, ok := alertDestinationOptionKeys(destinationType)
 	if !ok {
 		return nil
@@ -197,6 +211,8 @@ func flattenAlertDestination(destination interface{}, err error) (*alertDestinat
 		if v == nil {
 			continue
 		}
+		// The client fills in "" for some options that were never set, so
+		// they're dropped rather than showing up as unconfigured options.
 		s := fmt.Sprint(v)
 		if s == "" {
 			continue

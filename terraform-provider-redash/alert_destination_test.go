@@ -388,6 +388,10 @@ func TestValidateAlertDestinationOptions(t *testing.T) {
 		{"unsupported type passes through", "hipchat", map[string]interface{}{"anything": "x"}, ""},
 		{"unknown key", "email", map[string]interface{}{"addresses": "a", "cc": "b", "bcc": "c"},
 			`unsupported options for "email" alert destination: bcc, cc (supported: addresses, subject_template)`},
+		{"empty values", "email", map[string]interface{}{"addresses": "a", "subject_template": ""},
+			`alert destination options can't be empty, remove them instead: subject_template`},
+		{"empty values for an unsupported type", "hipchat", map[string]interface{}{"room": "", "url": ""},
+			`alert destination options can't be empty, remove them instead: room, url`},
 	}
 
 	for _, tc := range cases {
@@ -493,6 +497,12 @@ func TestResourceAlertDestination_customizeDiff(t *testing.T) {
 	_, err := res.Diff(context.Background(), nil, terraformResourceConfig(cfg), nil)
 	if err == nil || !strings.Contains(err.Error(), `unsupported options for "email"`) {
 		t.Errorf("expected plan to fail on an unsupported option, got %v", err)
+	}
+
+	cfg["options"] = map[string]interface{}{"addresses": "ops@example.com", "subject_template": ""}
+	_, err = res.Diff(context.Background(), nil, terraformResourceConfig(cfg), nil)
+	if err == nil || !strings.Contains(err.Error(), "options can't be empty") {
+		t.Errorf("expected plan to fail on an empty option, got %v", err)
 	}
 
 	cfg["options"] = map[string]interface{}{"addresses": "ops@example.com"}

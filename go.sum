@@ -148,6 +148,8 @@ github.com/snowplow-devops/redash-client-go v0.6.1-0.20260910104812-94c52a5e8ff0
 github.com/snowplow-devops/redash-client-go v0.6.1-0.20260910104812-94c52a5e8ff0/go.mod h1:pM8W8dmdBWaux6W37pvLnPQdgQcsBUt91iC6G839Gms=
 github.com/snowplow-devops/redash-client-go v0.7.0 h1:mThav5+nN4AokQzy9XkpsUmye0ZTDrbCQ0Hrv3P5iPw=
 github.com/snowplow-devops/redash-client-go v0.7.0/go.mod h1:Zu9qiheaZvNihVjcoJfwA4aQ+n63h0+2MOlFjIyTL+k=
+github.com/snowplow-devops/redash-client-go v0.8.0 h1:i+WT/NRVpD0Ob8qoDaQts1brs4eZ9ZGXNFNyFAa97DE=
+github.com/snowplow-devops/redash-client-go v0.8.0/go.mod h1:Zu9qiheaZvNihVjcoJfwA4aQ+n63h0+2MOlFjIyTL+k=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.2 h1:4jaiDzPyXQvSd7D0EjG45355tLlV3VOECpq10pLC+8s=

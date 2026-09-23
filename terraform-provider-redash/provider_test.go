@@ -13,9 +13,11 @@
 package main
 
 import (
+	"context"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/snowplow-devops/redash-client-go/redash"
 )
 
 var testAccProviders map[string]*schema.Provider
@@ -36,4 +38,31 @@ func TestProvider(t *testing.T) {
 
 func TestProvider_impl(t *testing.T) {
 	var _ = Provider()
+}
+
+func TestProviderConfigure(t *testing.T) {
+	d := schema.TestResourceDataRaw(t, Provider().Schema, map[string]interface{}{
+		"api_key":    "test-key",
+		"redash_uri": "https://redash.example.com",
+	})
+
+	meta, diags := providerConfigure(context.Background(), d)
+	if diags.HasError() {
+		t.Fatalf("unexpected error: %v", diags)
+	}
+	c, ok := meta.(*redash.Client)
+	if !ok || c.Config.APIKey != "test-key" || c.Config.RedashURI != "https://redash.example.com" {
+		t.Errorf("unexpected client: %#v", meta)
+	}
+}
+
+func TestProviderConfigure_invalidURI(t *testing.T) {
+	d := schema.TestResourceDataRaw(t, Provider().Schema, map[string]interface{}{
+		"api_key":    "test-key",
+		"redash_uri": "ftp://redash.example.com",
+	})
+
+	if _, diags := providerConfigure(context.Background(), d); !diags.HasError() {
+		t.Errorf("expected an error for a non-HTTP URI")
+	}
 }

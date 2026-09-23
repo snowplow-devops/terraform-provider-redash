@@ -78,3 +78,16 @@ resource "redash_group_data_source_attachment" "rrunner_gps" {
     redash_group.runners,
   ]
 }
+
+resource "redash_alert_destination" "acme_ops" {
+  name = "ACME Ops"
+  type = "email"
+
+  options = {
+    addresses = "ops@acme.com"
+  }
+}
+
+data "redash_alert_destination" "acme_ops" {
+  name = redash_alert_destination.acme_ops.name
+}

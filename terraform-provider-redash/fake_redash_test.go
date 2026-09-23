@@ -316,7 +316,10 @@ func (f *fakeRedash) searchUsers(w http.ResponseWriter, q string) {
 	results := []result{}
 	for id := 1; id < f.nextUserID; id++ {
 		u, ok := f.users[id]
-		if !ok || !(strings.Contains(u.Email, q) || strings.Contains(u.Name, q)) {
+		if !ok {
+			continue
+		}
+		if matches := strings.Contains(u.Email, q) || strings.Contains(u.Name, q); !matches {
 			continue
 		}
 		res := result{fakeUser: *u, Groups: []groupRef{}}

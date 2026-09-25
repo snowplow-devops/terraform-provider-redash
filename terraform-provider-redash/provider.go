@@ -43,11 +43,13 @@ func Provider() *schema.Provider {
 			"redash_user":                         resourceRedashUser(),
 			"redash_group":                        resourceRedashGroup(),
 			"redash_group_data_source_attachment": resourceRedashGroupDataSourceAttachment(),
+			"redash_alert_destination":            resourceRedashAlertDestination(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"redash_data_source": dataSourceRedashDataSource(),
-			"redash_user":        dataSourceRedashUser(),
-			"redash_group":       dataSourceRedashGroup(),
+			"redash_data_source":       dataSourceRedashDataSource(),
+			"redash_user":              dataSourceRedashUser(),
+			"redash_group":             dataSourceRedashGroup(),
+			"redash_alert_destination": dataSourceRedashAlertDestination(),
 		},
 
 		ConfigureContextFunc: providerConfigure,

@@ -6,7 +6,7 @@ toolchain go1.26.8
 
 require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
-	github.com/snowplow-devops/redash-client-go v0.7.0
+	github.com/snowplow-devops/redash-client-go v0.8.0
 )
 
 require (

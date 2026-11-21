@@ -49,4 +49,5 @@ resource "redash_group_data_source_attachment" "wcoyote_acme" {
 
 ## Argument Reference
 
-* `redash_uri` (Required) The complete url to the instance you will be managing including protocol (e.g. https://acme.com/) 
+* `redash_uri` (Required) The complete url to the instance you will be managing including protocol (e.g. https://acme.com/)
+* `http_headers` (Optional) Extra HTTP headers sent on every Redash API request.

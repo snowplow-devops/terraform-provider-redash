@@ -9,6 +9,8 @@ require (
 	github.com/snowplow-devops/redash-client-go v0.8.0
 )
 
+replace github.com/snowplow-devops/redash-client-go => ../redash-client-go-http-headers
+
 require (
 	github.com/ProtonMail/go-crypto v1.1.0-alpha.5-proton // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect

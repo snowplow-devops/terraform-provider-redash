@@ -14,6 +14,9 @@ package main
 
 import (
 	"context"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -53,6 +56,50 @@ func TestProviderConfigure(t *testing.T) {
 	c, ok := meta.(*redash.Client)
 	if !ok || c.Config.APIKey != "test-key" || c.Config.RedashURI != "https://redash.example.com" {
 		t.Errorf("unexpected client: %#v", meta)
+	}
+	if c.Config.HTTPClient != nil {
+		t.Errorf("expected the default HTTP client when http_headers is unset")
+	}
+}
+
+func TestProviderConfigure_httpHeaders(t *testing.T) {
+	d := schema.TestResourceDataRaw(t, Provider().Schema, map[string]interface{}{
+		"api_key":    "test-key",
+		"redash_uri": "https://redash.example.com",
+		"http_headers": map[string]interface{}{
+			"X-Request-Id": "abc123",
+		},
+	})
+
+	meta, diags := providerConfigure(context.Background(), d)
+	if diags.HasError() {
+		t.Fatalf("unexpected error: %v", diags)
+	}
+	c, ok := meta.(*redash.Client)
+	if !ok || c.Config.HTTPClient == nil {
+		t.Fatalf("expected a custom HTTP client, got %#v", meta)
+	}
+
+	var got string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = r.Header.Get("X-Request-Id")
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer srv.Close()
+
+	req, err := http.NewRequest(http.MethodGet, srv.URL, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := c.Config.HTTPClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	_, _ = io.Copy(io.Discard, resp.Body)
+
+	if got != "abc123" {
+		t.Errorf("X-Request-Id = %q", got)
 	}
 }
 

@@ -118,7 +118,26 @@ resource "redash_group_data_source_attachment" "wcoyote_acme" {
 }
 ```
 
-For more detailed documentation, please see the Terraform Provider documentaton at https://registry.terraform.io/providers/snowplow-devops/redash/latest
+### Alert Destinations ###
+
+The accepted options depend on the destination type (e.g. `email`, `slack`, `webhook`). Secret options such as passwords are masked by Redash, so the provider keeps the value from your configuration.
+
+```hcl
+data "redash_alert_destination" "ops" {
+  name = "Ops"
+}
+
+resource "redash_alert_destination" "acme_ops" {
+  name = "ACME Ops"
+  type = "email"
+
+  options = {
+    addresses = "ops@acme.com"
+  }
+}
+```
+
+For more detailed documentation, please see the Terraform Provider documentation at https://registry.terraform.io/providers/snowplow-devops/redash/latest
 
 ### Publishing
 
